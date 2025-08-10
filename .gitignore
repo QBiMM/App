@@ -1,0 +1,21 @@
+# Archivos de configuración con datos sensibles
+**/appsettings.secrets.json
+**/appsettings.Development.json
+
+# Archivos de User Secrets (por si acaso)
+**/[Uu]ser[Ss]ecrets/
+
+# Archivos de Docker locales
+docker-compose.override.yml
+
+# Archivos generados por compilación
+**/bin/
+**/obj/
+
+# Archivos de logs y temporales
+*.log
+*.tmp
+
+# Ignorar archivos de IDEs generales
+.vscode/
+.idea/
