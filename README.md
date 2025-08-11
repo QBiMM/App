@@ -129,3 +129,11 @@ Esto va a ejecutar el host, y va quedar escuchando en: https://localhost:44366.
 cd ../App.HttpApi.Host
 dotnet run
 ```
+## Ejecuta el frontend
+Con esto ejecutamos Angular: http://localhost:4200
+
+```bash
+cd ../../../angular/
+npm install @abp/utils@7.4.5 --legacy-peer-deps #Probablemente no sea necesario. Si falla, ejecutar esta línea.
+npm start
+```
