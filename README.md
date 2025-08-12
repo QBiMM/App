@@ -56,9 +56,9 @@ Puede ser posible usar ```mssql-tools``` para SQL Server, pero no está testeado
 ---
 
 
-## Instalación local
+# Instalación local
 
-Clona el repositorio y navega al directorio del proyecto:
+## Clona el repositorio y navega al directorio del proyecto:
 
 ```bash
 git clone https://github.com/QBiMM/App
@@ -67,11 +67,32 @@ cd App
 
 ---
 
+## Instala el CLI del framework ABP y exporta 
+```bash
+dotnet tool install -g Volo.Abp.Cli
+```
+
+Nota: Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o en la terminal, pero es temporal):
+```bash
+export PATH="$PATH:$HOME/.dotnet/tools"
+```
+## Instala las librerias que necesita ABP:
+```bash
+abp install-libs
+```
+
+## Ingresa a la carpeta "angular" e instala dependencias:
+```bash
+cd angular
+npm install @abp/utils@7.4.5 --legacy-peer-deps
+cd ..
+```
+
 ## Configuración de User Secrets
 
-Configura una passphrase única para la encriptación, adaptada a tu sistema operativo.
+Configura una passphrase única para la encriptación, adaptada a tu sistema operativo. No estoy seguro de que sea obligatorio este paso.
 
-### Para Windows (usando Git Bash)
+### Para Windows:
 
 Ejecuta lo siguiente en la terminal:
 
@@ -86,7 +107,7 @@ dotnet user-secrets init
 dotnet user-secrets set "StringEncryption:DefaultPassPhrase" $PASSPHRASE
 ```
 
-### Para Linux (usando Git Bash)
+### Para Linux:
 
 Ejecuta lo siguiente en la terminal:
 
@@ -129,11 +150,15 @@ Esto va a ejecutar el host, y va quedar escuchando en: https://localhost:44366.
 cd ../App.HttpApi.Host
 dotnet run
 ```
+
 ## Ejecuta el frontend
 Con esto ejecutamos Angular: http://localhost:4200
 
 ```bash
 cd ../../../angular/
-npm install @abp/utils@7.4.5 --legacy-peer-deps #Probablemente no sea necesario. Si falla, ejecutar esta línea.
 npm start
 ```
+
+Nota: Si algo falla, es recomendable que ejecutes en la carpeta base "App": 
+```bash 
+dotnet build```
