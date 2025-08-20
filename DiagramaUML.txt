@@ -1,0 +1,162 @@
+@startuml
+package "TourismManagement.Domain" {
+
+  class AbpUser {
+    +Guid Id
+    +string UserName
+    +string Email
+  }
+
+  class AbpAggregateRoot {
+    +Guid Id
+  }
+
+  class User {
+    +string FullName
+    +string ProfilePhotoUrl
+    +RoleEnum Role
+    --
+    -List<Guid> FavoriteDestinations
+    -List<Notification> Notifications
+    -List<Rating> Ratings
+    -NotificationPreferences Preferences
+    --
+    +AddFavorite(Guid destinationId)
+    +RemoveFavorite(Guid destinationId)
+    +UpdatePreferences(NotificationPreferences prefs)
+    +RateDestination(Guid destinationId, int stars, string comment)
+  }
+
+  class Destination {
+    +string Name
+    +string Country
+    +int Population
+    +DateTime LastUpdated
+    +string PhotoUrl
+    --
+    -Coordinates Coordinates
+    --
+    +UpdateFromExternalApi(ExternalData newData)
+  }
+
+  class Notification {
+    +string Message
+    +DateTime NotificationDate
+    +bool IsRead
+    +NotificationTypeEnum Type
+    --
+    +MarkAsRead()
+  }
+
+  class Rating {
+    +int Stars
+    +string Comment
+    +DateTime CreatedDate
+    --
+    +Update(int stars, string comment)
+    +Delete()
+  }
+
+  class AuditLog {
+    +Guid UserId
+    +ActionTypeEnum ActionType
+    +DateTime Timestamp
+    +string Details
+  }
+
+  class Coordinates {
+    +double Latitude
+    +double Longitude
+    --
+    +Equals(Coordinates other)
+  }
+
+  class NotificationPreferences {
+    +bool ReceiveInApp
+    +bool ReceiveByEmail
+    +FrequencyEnum Frequency
+    --
+    +{static} Create(bool inApp, bool email, FrequencyEnum freq)
+  }
+
+  class NotificationService {
+    -INotificationRepository _notificationRepo
+    -IDestinationRepository _destinationRepo
+    --
+    +CheckForUpdates(Guid userId, List<Destination> destinations)
+  }
+
+  class DestinationSyncService {
+    -IDestinationRepository _destinationRepo
+    --
+    +SyncWithExternalApi(Guid destinationId)
+  }
+
+  class AuditService {
+    -IAuditLogRepository _auditLogRepo
+    --
+    +LogAction(Guid userId, ActionTypeEnum action, string details)
+  }
+
+  interface IUserRepository
+  interface IDestinationRepository
+  interface INotificationRepository
+  interface IRatingRepository
+  interface IAuditLogRepository
+
+  enum RoleEnum {
+    Admin
+    CommonUser
+  }
+
+  enum NotificationTypeEnum {
+    DataUpdate
+    EventAlert
+  }
+
+  enum FrequencyEnum {
+    Immediate
+    Weekly
+  }
+
+  enum ActionTypeEnum {
+    AddFavorite
+    DeleteUser
+    LoginFail
+  }
+}
+
+' ============================
+' Herencia
+' ============================
+User --|> AbpUser
+Destination --|> AbpAggregateRoot
+
+' ============================
+' Relaciones dentro de agregados
+' ============================
+User "1" -- "0..*" Notification
+User "1" -- "0..*" Rating
+User o-- NotificationPreferences
+
+Destination o-- Coordinates
+
+' ============================
+' Servicios -> Dependencias
+' ============================
+NotificationService ..> IUserRepository
+NotificationService ..> IDestinationRepository
+NotificationService ..> Notification
+DestinationSyncService ..> IDestinationRepository
+AuditService ..> IAuditLogRepository
+AuditService ..> AuditLog
+
+' ============================
+' Repositorios -> Entidades
+' ============================
+IUserRepository ..> User
+IDestinationRepository ..> Destination
+INotificationRepository ..> Notification
+IRatingRepository ..> Rating
+IAuditLogRepository ..> AuditLog
+@enduml
