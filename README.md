@@ -51,9 +51,7 @@ sudo zypper install git dotnet-sdk nodejs npm openssl   # openSUSE
 
 Si usas Arch Linux o Fedora, probablemente necesites crear un contenedor con Docker para poder correr SQL Server. Por favor, siga las instrucciones:
 https://docs.docker.com/desktop/setup/install/linux/archlinux/#install-docker-desktop.
-Puede ser posible usar ```mssql-tools``` para SQL Server, pero no está testeado.
-
-Nota: algunos usuarios reportaron no poder instalar ```dotnet-sdk``` en Fedora directamente desde el gestor de paquetes nativo:
+> **Nota:** algunos usuarios reportaron no poder instalar ```dotnet-sdk``` en Fedora directamente desde el gestor de paquetes nativo:
 
 Según la documentación oficial de Microsoft, alcanza con:
 ```bash
@@ -92,7 +90,7 @@ dotnet tool install -g Volo.Abp.Cli
 export PATH="$PATH:$HOME/.dotnet/tools"
 ```
 ### Windows
-Nota: si quieres agregarla temporalmente solo usa 1
+> **Nota:** si quieres agregarla temporalmente solo usa 1
 ```powershell
 # 1 - Agrega para la sesión actual
 $dotnetTools = "$env:USERPROFILE\.dotnet\tools"
