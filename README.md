@@ -71,14 +71,15 @@ cd App
 ```bash
 dotnet tool install -g Volo.Abp.Cli
 ```
-### Bash (Linux)
-Nota: Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o en la terminal, pero es temporal):
-```bash (Linux)
+> **Nota:** Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o en la terminal, pero es temporal):
+
+### Linux
+```bash
 export PATH="$PATH:$HOME/.dotnet/tools"
 ```
-### Bash (Windows)
+### Windows
 Nota: si quieres agregarla temporalmente solo usa 1
-```bash (Windows)
+```powershell
 # 1 - Agrega para la sesión actual
 $dotnetTools = "$env:USERPROFILE\.dotnet\tools"
 if (-not ($env:Path -like "*$dotnetTools*")) { $env:Path += ";$dotnetTools" }
@@ -135,16 +136,32 @@ dotnet user-secrets init
 dotnet user-secrets set "StringEncryption:DefaultPassPhrase" "$PASSPHRASE"
 ```
 
-Si usas Arch Linux, también vas a tener que generar una conexión al contenedor con:
+Si usas Linux, también vas a tener que generar una conexión al contenedor con:
 ```bash
 cd aspnet-core/src/App.HttpApi.Host
+
+# Establecer la cadena de conexión de la base de datos
 dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost,1433;Database=App;User Id=sa;Password=PassWoRDSecreta123!;TrustServerCertificate=true"
+
+# Configurar URLs y CORS 
+dotnet user-secrets set "App:SelfUrl" "https://<SU_IP_PUBLICA>:44366"
+dotnet user-secrets set "App:ClientUrl" "https://<SU_IP_PUBLICA>:4200"
+dotnet user-secrets set "App:CorsOrigins" "https://<SU_IP_PUBLICA>:4200"
 
 cd ../App.DbMigrator
 dotnet user-secrets init
+
+# Establecer la cadena de conexión de la base de datos
 dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost,1433;Database=App;User Id=sa;Password=PassWoRDSecreta123!;TrustServerCertificate=true"
+
+# Configurar URLs y CORS 
+dotnet user-secrets set "App:SelfUrl" "https://<SU_IP_PUBLICA>:44366"
+dotnet user-secrets set "App:ClientUrl" "https://<SU_IP_PUBLICA>:4200"
+dotnet user-secrets set "App:CorsOrigins" "https://<SU_IP_PUBLICA>:4200"
 ```
-Nota: Asegúrese de exista una base de datos en SQL Server llamada "App" (si se llama distinto, puede cambiarlo en el comando). Revise que la contraseña tenga al menos 8 carácteres, con mayúsculas, minúsculas, números y símbolos. 
+> **Nota:** Asegúrese de exista una base de datos en SQL Server llamada "App" (si se llama distinto, puede cambiarlo en el comando). Revise que la contraseña tenga al menos 8 carácteres, con mayúsculas, minúsculas, números y símbolos.  
+
+> **Nota:** Asegúrese de reemplazar `<SU_IP_PUBLICA>` por la IP pública o dominio de su servidor.
 
 ---
 
@@ -161,7 +178,7 @@ Esto va a ejecutar el host, y va quedar escuchando en: https://localhost:44366.
 
 ```bash
 cd ../App.HttpApi.Host
-dotnet run
+dotnet run --urls "http://0.0.0.0:44366"
 ```
 
 ## Ejecuta el frontend
@@ -169,9 +186,10 @@ Con esto ejecutamos Angular: http://localhost:4200
 
 ```bash
 cd ../../../angular/
-npm start
+npm start -- --host 0.0.0.0 --ssl true --ssl-cert ../../angular-ssl-keys/angular-ssl.crt --ssl-key ../../angular-ssl-keys/angular-ssl.key
 ```
+> **Nota:** Asegúrate de cambiar el valor de los argumentos --ssl-cert y --ssl-key con la rutas de tu certificado y llave ssl
 
-Nota: Si algo falla, es recomendable que ejecutes en la carpeta base "App": 
+Si algo falla, es recomendable que ejecutes el siguiente comando en la carpeta base "App": 
 ```bash 
 dotnet build```
