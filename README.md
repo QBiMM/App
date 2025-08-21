@@ -204,4 +204,5 @@ npm start -- --host 0.0.0.0 --ssl true --ssl-cert ../../angular-ssl-keys/angular
 
 Si algo falla, es recomendable que ejecutes el siguiente comando en la carpeta base "App": 
 ```bash 
-dotnet build```
+dotnet build
+```
