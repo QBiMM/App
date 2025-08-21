@@ -71,10 +71,23 @@ cd App
 ```bash
 dotnet tool install -g Volo.Abp.Cli
 ```
-
+### Bash (Linux)
 Nota: Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o en la terminal, pero es temporal):
-```bash
+```bash (Linux)
 export PATH="$PATH:$HOME/.dotnet/tools"
+```
+### Bash (Windows)
+Nota: si quieres agregarla temporalmente solo usa 1
+```bash (Windows)
+# 1 - Agrega para la sesión actual
+$dotnetTools = "$env:USERPROFILE\.dotnet\tools"
+if (-not ($env:Path -like "*$dotnetTools*")) { $env:Path += ";$dotnetTools" }
+
+# 2 - Guarda el cambio de forma permanente para tu usuario
+[System.Environment]::SetEnvironmentVariable("Path", $env:Path, "User")
+
+# 3 - Verifica
+$env:Path -split ';' | ? { $_ -like "*\.dotnet\tools" }
 ```
 ## Instala las librerias que necesita ABP:
 ```bash
