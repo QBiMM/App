@@ -49,9 +49,24 @@ sudo yum install git dotnet-sdk nodejs npm openssl      # CentOS / RHEL
 sudo zypper install git dotnet-sdk nodejs npm openssl   # openSUSE
 ```
 
-Si usas Arch Linux, probablemente necesites crear un contenedor con Docker para poder correr SQL Server. Por favor, siga las instrucciones:
+Si usas Arch Linux o Fedora, probablemente necesites crear un contenedor con Docker para poder correr SQL Server. Por favor, siga las instrucciones:
 https://docs.docker.com/desktop/setup/install/linux/archlinux/#install-docker-desktop.
 Puede ser posible usar ```mssql-tools``` para SQL Server, pero no está testeado.
+
+Nota: algunos usuarios reportaron no poder instalar ```dotnet-sdk``` en Fedora directamente desde el gestor de paquetes nativo:
+
+Según la documentación oficial de Microsoft, alcanza con:
+```bash
+sudo dnf install dotnet-sdk-9.0
+```
+https://learn.microsoft.com/en-us/dotnet/core/install/linux-fedora?tabs=dotnet9
+
+Pero si esto no funciona, puedes registrar las claves GPG y agregar el repositorio:
+```bash
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/40/prod.repo
+sudo dnf install dotnet-sdk-9.0
+```
 
 ---
 
@@ -64,14 +79,13 @@ Puede ser posible usar ```mssql-tools``` para SQL Server, pero no está testeado
 git clone https://github.com/QBiMM/App
 cd App
 ```
-
 ---
 
 ## Instala el CLI del framework ABP y exporta 
 ```bash
 dotnet tool install -g Volo.Abp.Cli
 ```
-> **Nota:** Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o en la terminal, pero es temporal):
+> **Nota:** Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o también en la terminal, pero en ese caso sería temporal):
 
 ### Linux
 ```bash
@@ -104,7 +118,7 @@ cd ..
 
 ## Configuración de User Secrets
 
-Configura una passphrase única para la encriptación, adaptada a tu sistema operativo. No estoy seguro de que sea obligatorio este paso.
+Configura una passphrase única para la encriptación, adaptada a tu sistema operativo. ESTE PASO ES OPCIONAL.
 
 ### Para Windows:
 
@@ -136,7 +150,7 @@ dotnet user-secrets init
 dotnet user-secrets set "StringEncryption:DefaultPassPhrase" "$PASSPHRASE"
 ```
 
-Si usas Linux, también vas a tener que generar una conexión al contenedor con:
+Si usas Arch o Fedora (o cualquier distro no nativamente compatible con SQL Server), también vas a tener que generar una conexión al contenedor con:
 ```bash
 cd aspnet-core/src/App.HttpApi.Host
 
