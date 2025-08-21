@@ -153,11 +153,6 @@ dotnet user-secrets init
 
 # Establecer la cadena de conexión de la base de datos
 dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost,1433;Database=App;User Id=sa;Password=PassWoRDSecreta123!;TrustServerCertificate=true"
-
-# Configurar URLs y CORS 
-dotnet user-secrets set "App:SelfUrl" "https://<SU_IP_PUBLICA>:44366"
-dotnet user-secrets set "App:ClientUrl" "https://<SU_IP_PUBLICA>:4200"
-dotnet user-secrets set "App:CorsOrigins" "https://<SU_IP_PUBLICA>:4200"
 ```
 > **Nota:** Asegúrese de exista una base de datos en SQL Server llamada "App" (si se llama distinto, puede cambiarlo en el comando). Revise que la contraseña tenga al menos 8 carácteres, con mayúsculas, minúsculas, números y símbolos.  
 
