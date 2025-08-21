@@ -29,6 +29,7 @@ using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Microsoft.Extensions.Logging;
 
 namespace App;
 
@@ -194,6 +195,12 @@ public class AppHttpApiHostModule : AbpModule
 
         app.UseCorrelationId();
         app.MapAbpStaticAssets();
+        app.Use(async (ctx, next) =>
+        {
+            var logger = ctx.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Request: {Method} {Path} from {IP}", ctx.Request.Method, ctx.Request.Path, ctx.Connection.RemoteIpAddress);
+            await next();
+        });
         app.UseRouting();
         app.UseCors();
         app.UseAuthentication();
