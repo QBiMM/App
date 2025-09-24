@@ -1,4 +1,4 @@
-# App
+# TravelApp
 
 This is a startup project based on the ABP framework. For more information, visit <a href="https://abp.io/" target="_blank">abp.io</a>
 
@@ -25,3 +25,9 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice.
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Remote Environment
+
+The application provides a remote environment for production. we use `dynamic-env.json` file to set the environment variables and configured web server's `getEnvConfig` endpoint by default.
+
+See [Environment](https://abp.io/docs/latest/framework/ui/angular/environment) for more information.
