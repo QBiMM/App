@@ -8,22 +8,19 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
-    "skipLibCheck": true,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "@proxy": [
-        "src/app/proxy/index.ts"
-      ],
-      "@proxy/*": [
-        "src/app/proxy/*"
-      ]
+      "@angular/*":["node_modules/@angular/*"],
+      "@abp/*":["node_modules/@abp/*"],
+      "@volo/*":["node_modules/@volo/*"],
+      "@volosoft/*":["node_modules/@volosoft/*"],
+      "@swimlane/*": ["node_modules/@swimlane/*"],
+      "@ngx-validate/core":["node_modules/@ngx-validate/core"],
+      "@ng-bootstrap/ng-bootstrap": ["node_modules/@ng-bootstrap/ng-bootstrap"],
     },
     "useDefineForClassFields": false
   },

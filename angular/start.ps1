@@ -1,2 +1,2 @@
-yarn
-yarn start
+npx yarn
+npx yarn start

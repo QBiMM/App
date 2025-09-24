@@ -1,0 +1,73 @@
+services:
+  travelapp-angular:
+#    image: qbimm/travelapp-angular:latest  #Por el momento comentado porque no tenemos imagen en Docker Hub, se hace local
+    container_name: travelapp-angular
+    build:
+#      context: ../../
+#      dockerfile: angular/Dockerfile.local
+      context: ../../angular
+      dockerfile: Dockerfile.local
+    ports:
+      - "4200:80"
+    depends_on:
+      - travelapp-api
+    volumes:
+      - ./dynamic-env.json:/usr/share/nginx/html/dynamic-env.json
+    networks:
+      - abp-network
+
+  travelapp-api:
+#    image: qbimm/travelapp-api:latest   #Por el momento comentado porque no tenemos imagen en Docker Hub, se hace local
+    container_name: travelapp-api
+    hostname: travelapp-api
+    build:
+#      context: ../../
+#      dockerfile: src/TravelApp.HttpApi.Host/Dockerfile.local
+      context: ../../src/TravelApp.HttpApi.Host
+      dockerfile: Dockerfile.local
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80;
+      - Kestrel__Certificates__Default__Path=/root/certificate/localhost.pfx
+      - Kestrel__Certificates__Default__Password=91f91912-5ab0-49df-8166-23377efaf3cc
+      - App__SelfUrl=https://localhost:44354
+      - App__AngularUrl=http://localhost:4200
+      - App__CorsOrigins=http://localhost:4200
+      - App__HealthCheckUrl=http://travelapp-api/health-status
+      - App__RedirectAllowedUrls=http://localhost:4200
+      - AuthServer__Authority=https://localhost:44354
+      - AuthServer__RequireHttpsMetadata=true
+      - ConnectionStrings__Default=Server=travelapp_sqlserver;Database=TravelApp;User Id=sa;Password=QqvGRhyQoN6CFcYY;MultipleActiveResultSets=true;TrustServerCertificate=True
+#      - Redis__Configuration=redis
+    ports:
+      - "44354:443"
+#    depends_on:
+#      sql-server:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+    restart: on-failure
+    volumes:
+      - ./certs:/root/certificate
+    networks:
+      - abp-network
+
+  db-migrator:
+#    image: qbimm/travelapp-db-migrator:latest   #Por el momento comentado porque no tenemos imagen en Docker Hub, se hace local
+    container_name: db-migrator
+    build:
+#      context: ../../
+#      dockerfile: src/TravelApp.DbMigrator/Dockerfile.local
+      context: ../../src/TravelApp.DbMigrator # Change this line
+      dockerfile: Dockerfile.local
+    environment:
+      - OpenIddict__Applications__TravelApp_App__RootUrl=http://localhost:4200
+      - ConnectionStrings__Default=Server=travelapp_sqlserver;Database=TravelApp;User Id=sa;Password=QqvGRhyQoN6CFcYY;MultipleActiveResultSets=true;TrustServerCertificate=True
+#    depends_on:
+#      sql-server:
+#        condition: service_healthy
+    networks:
+      - abp-network
+
+networks:
+  abp-network:
+    external: true

@@ -1,26 +1,31 @@
 import { Environment } from '@abp/ng.core';
 
-const baseUrl = 'http://localhost:4200';
+const baseUrl = 'https://nicolasrodriguezdev.com.ar';
+
+const oAuthConfig = {
+  issuer: 'https://nicolasrodriguezdev.com.ar/api/',
+  redirectUri: baseUrl,
+  clientId: 'TravelApp_App',
+  responseType: 'code',
+  scope: 'offline_access openid profile email phone TravelApp',
+  requireHttps: true,
+};
 
 export const environment = {
-  production: false,
+  production: true,
   application: {
     baseUrl,
-    name: 'App',
-    logoUrl: '',
+    name: 'TravelApp',
   },
-  oAuthConfig: {
-    issuer: 'https://localhost:44366/',
-    redirectUri: baseUrl,
-    clientId: 'App_App',
-    responseType: 'code',
-    scope: 'offline_access App',
-    requireHttps: true,
-  },
+  oAuthConfig,
   apis: {
     default: {
-      url: 'https://localhost:44366',
-      rootNamespace: 'App',
+      url: 'https://nicolasrodriguezdev.com.ar/api/',
+      rootNamespace: 'TravelApp',
+    },
+    AbpAccountPublic: {
+      url: 'https://nicolasrodriguezdev.com.ar/api/',
+      rootNamespace: 'AbpAccountPublic',
     },
   },
 } as Environment;

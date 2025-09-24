@@ -1,13 +1,15 @@
 import { RoutesService, eLayoutType } from '@abp/ng.core';
-import { APP_INITIALIZER } from '@angular/core';
+import { inject, provideAppInitializer } from '@angular/core';
 
 export const APP_ROUTE_PROVIDER = [
-  { provide: APP_INITIALIZER, useFactory: configureRoutes, deps: [RoutesService], multi: true },
+  provideAppInitializer(() => {
+    configureRoutes();
+  }),
 ];
 
-function configureRoutes(routesService: RoutesService) {
-  return () => {
-    routesService.add([
+function configureRoutes() {
+  const routes = inject(RoutesService);
+  routes.add([
       {
         path: '/',
         name: '::Menu:Home',
@@ -15,6 +17,5 @@ function configureRoutes(routesService: RoutesService) {
         order: 1,
         layout: eLayoutType.application,
       },
-    ]);
-  };
+  ]);
 }

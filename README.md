@@ -1,203 +1,67 @@
-# App
-Repositorio de la aplicación integradora
+﻿# TravelApp
 
----
+## About this solution
 
-# Configuración del proyecto ABP
+This is a layered startup solution based on [Domain Driven Design (DDD)](https://abp.io/docs/latest/framework/architecture/domain-driven-design) practises. All the fundamental ABP modules are already installed. Check the [Application Startup Template](https://abp.io/docs/latest/solution-templates/layered-web-application) documentation for more info.
 
-## Paquetes necesarios. A continuación se explica como instalar según el sistema operativo.
+### Pre-requirements
 
-- **.NET SDK**  
-- **Node.js y npm**  
-- **(Opcional) Docker**  
-  - [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- **OpenSSL**  
----
+* [.NET9.0+ SDK](https://dotnet.microsoft.com/download/dotnet)
+* [Node v18 or 20](https://nodejs.org/en)
 
-## Requisitos y configuración por sistema operativo
+### Configurations
 
-### Windows
+The solution comes with a default configuration that works out of the box. However, you may consider to change the following configuration before running your solution:
 
-1. **Instalar Chocolatey**  
-   Abre PowerShell como administrador y ejecuta:
+* Check the `ConnectionStrings` in `appsettings.json` files under the `TravelApp.HttpApi.Host` and `TravelApp.DbMigrator` projects and change it if you need.
 
-   ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process -Force; `
-   [System.Net.ServicePointManager]::SecurityProtocol = `
-   [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
-   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-   ```
+### Before running the application
 
-2. **Instalar dependencias con Chocolatey**  
-   ```powershell
-   choco install nodejs
-   choco install openssl.light
-   choco install git
-   ```
+* Run `abp install-libs` command on your solution folder to install client-side package dependencies. This step is automatically done when you create a new solution, if you didn't especially disabled it. However, you should run it yourself if you have first cloned this solution from your source control, or added a new client-side package dependency to your solution.
+* Run `TravelApp.DbMigrator` to create the initial database. This step is also automatically done when you create a new solution, if you didn't especially disabled it. This should be done in the first run. It is also needed if a new database migration is added to the solution later.
 
----
+#### Generating a Signing Certificate
 
-### Linux
+In the production environment, you need to use a production signing certificate. ABP Framework sets up signing and encryption certificates in your application and expects an `openiddict.pfx` file in your application.
 
-Instala los paquetes necesarios:
+To generate a signing certificate, you can use the following command:
 
 ```bash
-sudo pacman -S git dotnet-sdk nodejs npm openssl        # Arch Linux
-sudo apt-get install git dotnet-sdk nodejs npm openssl  # Ubuntu / Debian
-sudo dnf install git dotnet-sdk nodejs npm openssl      # Fedora
-sudo yum install git dotnet-sdk nodejs npm openssl      # CentOS / RHEL
-sudo zypper install git dotnet-sdk nodejs npm openssl   # openSUSE
+dotnet dev-certs https -v -ep openiddict.pfx -p d53cdadb-1333-4cd1-9f6d-b8b3ea2304e5
 ```
 
-Si usas Arch Linux o Fedora, probablemente necesites crear un contenedor con Docker para poder correr SQL Server. Por favor, siga las instrucciones:
-https://docs.docker.com/desktop/setup/install/linux/archlinux/#install-docker-desktop.
-> **Nota:** algunos usuarios reportaron no poder instalar ```dotnet-sdk``` en Fedora directamente desde el gestor de paquetes nativo:
+> `d53cdadb-1333-4cd1-9f6d-b8b3ea2304e5` is the password of the certificate, you can change it to any password you want.
 
-Según la documentación oficial de Microsoft, alcanza con:
-```bash
-sudo dnf install dotnet-sdk-9.0
-```
-https://learn.microsoft.com/en-us/dotnet/core/install/linux-fedora?tabs=dotnet9
+It is recommended to use **two** RSA certificates, distinct from the certificate(s) used for HTTPS: one for encryption, one for signing.
 
-Pero si esto no funciona, puedes registrar las claves GPG y agregar el repositorio:
-```bash
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/40/prod.repo
-sudo dnf install dotnet-sdk-9.0
-```
+For more information, please refer to: [OpenIddict Certificate Configuration](https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html#registering-a-certificate-recommended-for-production-ready-scenarios)
 
----
+> Also, see the [Configuring OpenIddict](https://abp.io/docs/latest/Deployment/Configuring-OpenIddict#production-environment) documentation for more information.
+
+### Solution structure
+
+This is a layered monolith application that consists of the following applications:
+
+* `TravelApp.DbMigrator`: A console application which applies the migrations and also seeds the initial data. It is useful on development as well as on production environment.
+* `TravelApp.HttpApi.Host`: ASP.NET Core API application that is used to expose the APIs to the clients.
+* `angular`: Angular application.
 
 
-# Instalación local
+## Deploying the application
 
-## Clona el repositorio y navega al directorio del proyecto:
+Deploying an ABP application follows the same process as deploying any .NET or ASP.NET Core application. However, there are important considerations to keep in mind. For detailed guidance, refer to ABP's [deployment documentation](https://abp.io/docs/latest/Deployment/Index).
 
-```bash
-git clone https://github.com/QBiMM/App
-cd App
-```
----
+### Additional resources
 
-## Instala el CLI del framework ABP y exporta 
-```bash
-dotnet tool install -g Volo.Abp.Cli
-```
-> **Nota:** Probablemente debas agregar la variable global PATH a tu .bashrc o .zshrc (o también en la terminal, pero en ese caso sería temporal):
 
-### Linux
-```bash
-export PATH="$PATH:$HOME/.dotnet/tools"
-```
-### Windows
-> **Nota:** si quieres agregarla temporalmente solo usa 1
-```powershell
-# 1 - Agrega para la sesión actual
-$dotnetTools = "$env:USERPROFILE\.dotnet\tools"
-if (-not ($env:Path -like "*$dotnetTools*")) { $env:Path += ";$dotnetTools" }
+#### Internal Resources
 
-# 2 - Guarda el cambio de forma permanente para tu usuario
-[System.Environment]::SetEnvironmentVariable("Path", $env:Path, "User")
+You can find detailed setup and configuration guide(s) for your solution below:
 
-# 3 - Verifica
-$env:Path -split ';' | ? { $_ -like "*\.dotnet\tools" }
-```
-## Instala las librerias que necesita ABP:
-```bash
-abp install-libs
-```
+* [Angular](./angular/README.md)
 
-## Ingresa a la carpeta "angular" e instala dependencias:
-```bash
-cd angular
-npm install @abp/utils@7.4.5 --legacy-peer-deps
-cd ..
-```
+#### External Resources
+You can see the following resources to learn more about your solution and the ABP Framework:
 
-## Configuración de User Secrets
-
-Configura una passphrase única para la encriptación, adaptada a tu sistema operativo. ESTE PASO ES OPCIONAL.
-
-### Para Windows:
-
-Ejecuta lo siguiente en la terminal:
-
-```bash
-cd aspnet-core/src/App.HttpApi.Host
-
-# Generar passphrase aleatoria
-$PASSPHRASE = & openssl rand -base64 32
-
-# Inicializar y establecer user-secrets para App.HttpApi.Host
-dotnet user-secrets init
-dotnet user-secrets set "StringEncryption:DefaultPassPhrase" $PASSPHRASE
-```
-
-### Para Linux:
-
-Ejecuta lo siguiente en la terminal:
-
-```bash
-cd aspnet-core/src/App.HttpApi.Host
-
-# Generar passphrase aleatoria
-PASSPHRASE=$(openssl rand -base64 32)
-
-# Inicializar y establecer user-secrets para App.HttpApi.Host
-dotnet user-secrets init
-dotnet user-secrets set "StringEncryption:DefaultPassPhrase" "$PASSPHRASE"
-```
-
-Si usas Arch o Fedora (o cualquier distro no nativamente compatible con SQL Server), también vas a tener que generar una conexión al contenedor con:
-```bash
-cd aspnet-core/src/App.HttpApi.Host
-
-# Establecer la cadena de conexión de la base de datos
-dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost,1433;Database=App;User Id=sa;Password=PassWoRDSecreta123!;TrustServerCertificate=true"
-
-# Configurar URLs y CORS 
-dotnet user-secrets set "App:SelfUrl" "https://<SU_IP_PUBLICA>:44366"
-dotnet user-secrets set "App:ClientUrl" "https://<SU_IP_PUBLICA>:4200"
-dotnet user-secrets set "App:CorsOrigins" "https://<SU_IP_PUBLICA>:4200"
-
-cd ../App.DbMigrator
-dotnet user-secrets init
-
-# Establecer la cadena de conexión de la base de datos
-dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost,1433;Database=App;User Id=sa;Password=PassWoRDSecreta123!;TrustServerCertificate=true"
-```
-> **Nota:** Asegúrese de exista una base de datos en SQL Server llamada "App" (si se llama distinto, puede cambiarlo en el comando). Revise que la contraseña tenga al menos 8 carácteres, con mayúsculas, minúsculas, números y símbolos.  
-
-> **Nota:** Asegúrese de reemplazar `<SU_IP_PUBLICA>` por la IP pública o dominio de su servidor.
-
----
-
-## Aplica las migraciones
-Aseguráte de estar en la raíz del repositorio antes de ejecutar estos comandos.
-
-```bash
-cd aspnet-core/src/App.DbMigrator
-dotnet run
-```
-
-## Ejecuta el backend
-Esto va a ejecutar el host, y va quedar escuchando en: https://localhost:44366.
-
-```bash
-cd ../App.HttpApi.Host
-dotnet run --urls "http://0.0.0.0:44366"
-```
-
-## Ejecuta el frontend
-Con esto ejecutamos Angular: http://localhost:4200
-
-```bash
-cd ../../../angular/
-npm start -- --host 0.0.0.0 --ssl true --ssl-cert ../../angular-ssl-keys/angular-ssl.crt --ssl-key ../../angular-ssl-keys/angular-ssl.key
-```
-> **Nota:** Asegúrate de cambiar el valor de los argumentos --ssl-cert y --ssl-key con la rutas de tu certificado y llave ssl
-
-Si algo falla, es recomendable que ejecutes el siguiente comando en la carpeta base "App": 
-```bash 
-dotnet build
-```
+* [Web Application Development Tutorial](https://abp.io/docs/latest/tutorials/book-store/part-1)
+* [Application Startup Template](https://abp.io/docs/latest/startup-templates/application/index)
