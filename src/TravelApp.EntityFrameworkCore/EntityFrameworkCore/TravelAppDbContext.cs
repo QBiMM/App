@@ -26,8 +26,6 @@ public class TravelAppDbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-    
-    public DbSet<Destinations.Destination> Destination { get; set; }
 
 
     #region Entities from the modules
@@ -82,18 +80,6 @@ public class TravelAppDbContext :
         builder.ConfigureBlobStoring();
         
         /* Configure your own tables/entities inside here */
-
-        builder.Entity<Destinations.Destination>(b =>
-        {
-            b.ToTable("Destinations");
-            b.ConfigureByConvention();
-            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
-            b.Property(x => x.Country).HasMaxLength(128);
-            b.Property(x => x.ImageURL).HasMaxLength(1024);
-            b.Property(x => x.Latitude).HasMaxLength(128);
-            b.Property(x => x.Longitude).HasMaxLength(128);
-
-        });
 
         //builder.Entity<YourEntity>(b =>
         //{
