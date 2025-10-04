@@ -27,6 +27,7 @@ public class TravelAppDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
+    public DbSet<Destinations.Destination> Destinations { get; set; } 
 
     #region Entities from the modules
 
@@ -85,8 +86,8 @@ public class TravelAppDbContext :
         {
             b.ToTable("Destinations");
             b.ConfigureByConvention();
+            b.Property(x => x.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWSEQUENTIALID()");
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
-            b.Property(x => x.Country).HasMaxLength(128);
             b.Property(x => x.ImageURL).HasMaxLength(1024);
             b.Property(x => x.Latitude).HasMaxLength(128);
             b.Property(x => x.Longitude).HasMaxLength(128);
