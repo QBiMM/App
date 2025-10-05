@@ -1,0 +1,25 @@
+{
+  "production": true,
+  "application": {
+    "baseUrl":"http://localhost:4200",		// https://myapp.com
+    "name": "BookStore",
+    "logoUrl": ""
+  },
+  "oAuthConfig": {
+    "issuer": "https://localhost:44354/", 	// https://myapi.com/
+    "redirectUri": "http://localhost:4200", // https://myapp.com
+    "clientId": "BookStore_App",
+    "responseType": "code",
+    "scope": "offline_access openid profile email phone BookStore"
+  },
+  "apis": {
+    "default": {
+      "url": "https://localhost:44354",		// https://myapi.com
+      "rootNamespace": "BookStore"
+    },
+    "AbpAccountPublic": {
+      "url": "https://localhost:44354",		// https://myapi.com
+      "rootNamespace": "AbpAccountPublic"
+    }
+  }
+}

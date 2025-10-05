@@ -1,0 +1,62 @@
+services:
+  travelapp-angular:
+    image: qbimm/travelapp-angular:latest
+    container_name: travelapp-angular
+    build:
+      context: ../../angular
+      dockerfile: Dockerfile.local
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - travelapp-api
+    volumes:
+      - ./dynamic-env.json:/usr/share/nginx/html/dynamic-env.json
+      - ./certs:/etc/nginx/certs
+    networks:
+      - abp-network
+
+  travelapp-api:
+    image: qbimm/travelapp-api:latest
+    container_name: travelapp-api
+    hostname: travelapp-api
+    build:
+      context: ../../src/TravelApp.HttpApi.Host
+      dockerfile: Dockerfile.local
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80;
+      - Kestrel__Certificates__Default__Path=/app/certificate/localhost.pfx
+      - Kestrel__Certificates__Default__Password=${KESTREL_CERT_PASSWORD}
+      - App__SelfUrl=${APP_SELF_URL}
+      - App__AngularUrl=${APP_ANGULAR_URL}
+      - App__CorsOrigins=${APP_CORS_ORIGINS}
+      - App__HealthCheckUrl=http://travelapp-api/health-status
+      - App__RedirectAllowedUrls=${APP_REDIRECT_ALLOWED_URLS}
+      - AuthServer__Authority=${AUTHSERVER_AUTHORITY}
+      - AuthServer__RequireHttpsMetadata=false
+      - ConnectionStrings__Default=${DB_CONNECTION_STRING}
+      - AuthServer__CertificatePassPhrase=${AUTHSERVER_CERT_PASSPHRASE}
+      - StringEncryption__DefaultPassPhrase=${STRING_ENCRYPTION_PASSPHRASE}
+    ports:
+      - "44354:443"
+    restart: on-failure
+    volumes:
+      - ./certs:/app/certificate
+    networks:
+      - abp-network
+
+  db-migrator:
+    image: qbimm/travelapp-db-migrator:latest
+    container_name: db-migrator
+    build:
+      context: ../../src/TravelApp.DbMigrator
+      dockerfile: Dockerfile.local
+    environment:
+      - OpenIddict__Applications__TravelApp_App__RootUrl=${OPENIDDICT_TRAVELAPP_ROOT_URL}
+      - ConnectionStrings__Default=${DB_CONNECTION_STRING}
+    networks:
+      - abp-network
+
+networks:
+  abp-network:
+    external: true
