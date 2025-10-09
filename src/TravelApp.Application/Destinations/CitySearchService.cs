@@ -1,47 +1,97 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Services;
+using Volo.Abp.DependencyInjection;
+using static System.Net.WebRequestMethods;
 
 namespace TravelApp.Destinations
 {
-    public class CitySearchService : ICitySearchService
+    using System.Collections.Generic;
+    using System.Text.Json.Serialization;
+
+    using System.Collections.Generic;
+    using System.Text.Json.Serialization;
+
+    // --- Clases Modelo para la Respuesta de Geoapify Geocoding API ---
+
+    // 1. La clase Raíz (representa todo el JSON)
+    // Nota: La propiedad principal ahora se llama "results" en lugar de "features"
+    public class GeoapifyGeocodeResponse
     {
-        private static readonly string apiKey = "8777bcbfe5mshfe6bb145b724f38p1d2bc9jsn7c0a4051406a";
-        private static readonly string baseUrl = "https://wft-geo-db.p.rapidapi.com/v1/geo/places/%7BplaceId%7D/distance?toPlaceId=Q60";
-        private static readonly string apiHost = "geodb-cities.p.rapidapi.com";
+        [JsonPropertyName("results")]
+        public List<ResultData> Results { get; set; }
+    }
+
+    // 2. Clase para cada objeto en el array "results"
+    // Esta clase contiene toda la información que nos interesa
+    public class ResultData
+    {
+        [JsonPropertyName("country")]
+        public string Country { get; set; }
+
+        [JsonPropertyName("country_code")]
+        public string CountryCode { get; set; }
+
+        [JsonPropertyName("city")]
+        public string City { get; set; }
+
+        [JsonPropertyName("lon")]
+        public double Lon { get; set; }
+
+        [JsonPropertyName("lat")]
+        public double Lat { get; set; }
+
+        // Objeto anidado "timezone"
+        [JsonPropertyName("timezone")]
+        public Timezone Timezone { get; set; }
+
+        // Puedes añadir más propiedades si las necesitas (formatted, rank, etc.)
+    }
+
+    // 3. Clase para el objeto anidado "timezone" (opcional, pero buena práctica)
+    public class Timezone
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+    }
+    public class CitySearchService : ApplicationService, ICitySearchService, ITransientDependency
+    {
+        private readonly IHttpClientFactory _httpClientFactory;
+        public CitySearchService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+        private static readonly string apiKey = "361fe31c015e4ed090fbdb6c767b3ad1";
         public async Task<List<DestinationDto>> SearchAsync(string cityName)
         {
-            static async Task Main(string[] args)
+            if (string.IsNullOrWhiteSpace(cityName))
             {
-                Console.WriteLine("Enter the name of the city to search: ");
-                string cityName = Console.ReadLine();
-                await SearchCityAsync(cityName);
+                return new List<DestinationDto>();
             }
-            static async Task SearchCityAsync(string city)
+            var client = _httpClientFactory.CreateClient("Geoapify");
+            string url = $"v1/geocode/search?text={Uri.EscapeDataString(cityName)}&format=json&apiKey={apiKey}";
+            Console.WriteLine($"Llamando a la API: {client.BaseAddress}{url}");
+            Console.WriteLine("Hola desde el mas alla");
+            try
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Add("X-RapidAPI-Key", apiKey);
-                    client.DefaultRequestHeaders.Add("X-RapidAPI-Host", apiHost);
-                    string url = $"{baseUrl}/cities?namePrefix={Uri.EscapeDataString(city)}&limit=5";
-                    HttpResponseMessage response = await client.GetAsync(url);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string jsonResult = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine($"Result: {jsonResult}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error: {response.StatusCode}");
-                    }
-
-                }
+                var apiResponse = await client.GetFromJsonAsync<GeoapifyGeocodeResponse>(url);
+                var resultDataList = apiResponse?.Results ?? new List<ResultData>();
+                return ObjectMapper.Map<List<ResultData>, List<DestinationDto>>(resultDataList);
             }
-            return new List<DestinationDto>();
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al llamar");
+                Logger.LogError(ex, "Error llamando a la API de geoDb");
+                return new List<DestinationDto>();
+            }
         }
     }
 }

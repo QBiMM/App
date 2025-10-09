@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
+using Volo.Abp.Validation;
 
 namespace TravelApp.Destinations
 {
-    public class CitySearchAppService : ApplicationService
+    public class CitySearchAppService : ApplicationService, ICitySearchService
     {
         private readonly ICitySearchService _citySearchService;
         public CitySearchAppService(ICitySearchService citySearchService)
@@ -16,7 +18,13 @@ namespace TravelApp.Destinations
         }
         public async Task<List<DestinationDto>> SearchAsync(string cityName)
         {
+            if (string.IsNullOrWhiteSpace(cityName))
+            {
+                throw new AbpValidationException("City Name cannot be empty.");
+            }
+
             return await _citySearchService.SearchAsync(cityName);
+
         }
     }
 }

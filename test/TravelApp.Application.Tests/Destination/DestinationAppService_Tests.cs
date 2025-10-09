@@ -15,7 +15,7 @@ using Volo.Abp.Validation;
 using Xunit;
 
 namespace TravelApp.Destination
-{
+{ 
     public abstract class IDestinationAppService<TStartupModule> : TravelAppApplicationTestBase<TStartupModule>
         where TStartupModule : IAbpModule
     {
