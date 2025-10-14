@@ -8,7 +8,7 @@ using Volo.Abp.Application.Services;
 
 namespace TravelApp.Destinations
 {
-    public interface ICitySearchService 
+    public interface ICitySearchService
     {
         Task<List<DestinationDto>> SearchAsync(string cityName);
     }

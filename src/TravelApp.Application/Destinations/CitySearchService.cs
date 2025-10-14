@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json.Serialization;
+using Volo.Abp.ObjectMapping;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
@@ -65,9 +66,13 @@ namespace TravelApp.Destinations
     public class CitySearchService : ApplicationService, ICitySearchService, ITransientDependency
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public CitySearchService(IHttpClientFactory httpClientFactory)
+        private readonly IObjectMapper _objectMapper;
+        private readonly ILogger<CitySearchService> _logger;
+        public CitySearchService(IHttpClientFactory httpClientFactory, IObjectMapper objectMapper, ILogger<CitySearchService> logger)
         {
             _httpClientFactory = httpClientFactory;
+            _objectMapper = objectMapper;
+            _logger = logger;
         }
         private static readonly string apiKey = "361fe31c015e4ed090fbdb6c767b3ad1";
         public async Task<List<DestinationDto>> SearchAsync(string cityName)
@@ -76,22 +81,12 @@ namespace TravelApp.Destinations
             {
                 return new List<DestinationDto>();
             }
-            var client = _httpClientFactory.CreateClient("Geoapify");
-            string url = $"v1/geocode/search?text={Uri.EscapeDataString(cityName)}&format=json&apiKey={apiKey}";
-            Console.WriteLine($"Llamando a la API: {client.BaseAddress}{url}");
-            Console.WriteLine("Hola desde el mas alla");
-            try
-            {
+                var client = _httpClientFactory.CreateClient("Geoapify");
+                string url = $"v1/geocode/search?text={Uri.EscapeDataString(cityName)}&format=json&apiKey={apiKey}";
+                _logger.LogInformation($"Llamando a la API: {client.BaseAddress}{url}");
                 var apiResponse = await client.GetFromJsonAsync<GeoapifyGeocodeResponse>(url);
                 var resultDataList = apiResponse?.Results ?? new List<ResultData>();
                 return ObjectMapper.Map<List<ResultData>, List<DestinationDto>>(resultDataList);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error al llamar");
-                Logger.LogError(ex, "Error llamando a la API de geoDb");
-                return new List<DestinationDto>();
-            }
         }
     }
 }
