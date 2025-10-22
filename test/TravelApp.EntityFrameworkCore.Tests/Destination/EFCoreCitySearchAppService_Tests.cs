@@ -10,7 +10,7 @@ using TravelApp.Destination;
 namespace TravelApp.Destination
 {
     [Collection(TravelAppTestConsts.CollectionDefinitionName)]
-    public class EFCoreCitySearchAppService_IntegrationTests : ICitySearchAppService_IntegrationTest<TravelAppEntityFrameworkCoreTestModule>
+    public class EFCoreCitySearchAppService_IntegrationTests : CitySearchAppService_IntegrationTest<TravelAppEntityFrameworkCoreTestModule>
     {
 
 
@@ -19,7 +19,7 @@ namespace TravelApp.Destination
     {
     }
 
-    public class EFCoreCitySearchAppService_ErrorHandlingTest : CitySearchAppService_ErrorHandlingTest<TravelAppEntityFrameworkCoreTestModule>
+    public class EFCoreCitySearchAppService_ErrorHandlingTest : CitySearchAppService_ErrorHandlingTests<TravelAppEntityFrameworkCoreTestModule>
     {
     }
 }
