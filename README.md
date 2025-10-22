@@ -13,7 +13,7 @@ This is a layered startup solution based on [Domain Driven Design (DDD)](https:/
 
 The solution comes with a default configuration that works out of the box. However, you may consider to change the following configuration before running your solution:
 
-* Check the `ConnectionStrings` in `appsettings.json` files under the `TravelApp.HttpApi.Host` and `TravelApp.DbMigrator` projects and change it if you need.
+* Check the `ConnectionStrings` in `appsettings.json` files under the `TravelApp.Web` and `TravelApp.DbMigrator` projects and change it if you need.
 
 ### Before running the application
 
@@ -27,10 +27,10 @@ In the production environment, you need to use a production signing certificate.
 To generate a signing certificate, you can use the following command:
 
 ```bash
-dotnet dev-certs https -v -ep openiddict.pfx -p d53cdadb-1333-4cd1-9f6d-b8b3ea2304e5
+dotnet dev-certs https -v -ep openiddict.pfx -p 1c5adccc-d735-498c-9091-c862736c4e2c
 ```
 
-> `d53cdadb-1333-4cd1-9f6d-b8b3ea2304e5` is the password of the certificate, you can change it to any password you want.
+> `1c5adccc-d735-498c-9091-c862736c4e2c` is the password of the certificate, you can change it to any password you want.
 
 It is recommended to use **two** RSA certificates, distinct from the certificate(s) used for HTTPS: one for encryption, one for signing.
 
@@ -43,8 +43,7 @@ For more information, please refer to: [OpenIddict Certificate Configuration](ht
 This is a layered monolith application that consists of the following applications:
 
 * `TravelApp.DbMigrator`: A console application which applies the migrations and also seeds the initial data. It is useful on development as well as on production environment.
-* `TravelApp.HttpApi.Host`: ASP.NET Core API application that is used to expose the APIs to the clients.
-* `angular`: Angular application.
+* `TravelApp.Web`: ASP.NET Core MVC / Razor Pages application that is the essential web application of the solution.
 
 
 ## Deploying the application
@@ -53,14 +52,6 @@ Deploying an ABP application follows the same process as deploying any .NET or A
 
 ### Additional resources
 
-
-#### Internal Resources
-
-You can find detailed setup and configuration guide(s) for your solution below:
-
-* [Angular](./angular/README.md)
-
-#### External Resources
 You can see the following resources to learn more about your solution and the ABP Framework:
 
 * [Web Application Development Tutorial](https://abp.io/docs/latest/tutorials/book-store/part-1)

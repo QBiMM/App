@@ -6,6 +6,8 @@ namespace TravelApp.Destinations
     public class DestinationDto : AuditedEntityDto<Guid>
     {
         public string Name { get; set; }
+    
+        public string Country { get; set; }
 
         public Guid Id { get; set; }
 

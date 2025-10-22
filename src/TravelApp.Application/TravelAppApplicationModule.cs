@@ -21,7 +21,7 @@ namespace TravelApp;
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule)
-    )]
+)]
 public class TravelAppApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

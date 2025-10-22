@@ -8,7 +8,7 @@ namespace TravelApp
     [DependsOn(
         typeof(TravelAppApplicationModule), // Depende del módulo principal de la aplicación
         typeof(TravelAppTestBaseModule)     // Depende de la base de tests
-        )]
+    )]
     public class TravelAppApplicationTestModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)

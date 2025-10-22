@@ -12,12 +12,15 @@ public class TravelAppDbContextFactory : IDesignTimeDbContextFactory<TravelAppDb
 {
     public TravelAppDbContext CreateDbContext(string[] args)
     {
+        // https://www.npgsql.org/efcore/release-notes/6.0.html#opting-out-of-the-new-timestamp-mapping-logic
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        
         var configuration = BuildConfiguration();
         
         TravelAppEfCoreEntityExtensionMappings.Configure();
 
         var builder = new DbContextOptionsBuilder<TravelAppDbContext>()
-            .UseSqlServer(configuration.GetConnectionString("Default"));
+            .UseNpgsql(configuration.GetConnectionString("Default"));
         
         return new TravelAppDbContext(builder.Options);
     }

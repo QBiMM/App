@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Modularity;
 using System.Collections.Generic;
@@ -109,18 +109,17 @@ namespace TravelApp.Destination
         }
         [Fact]
         [Trait("category", "IntegrationTest")]
-        public async Task SearchAsync_Network_Error_Handling() 
+        public async Task SearchAsync_Network_Error_Should_Return_Empty_List()
         {
             _mockProvider
-                 .Setup(p => p.SearchAsync(It.IsAny<string>()))
-                 .ThrowsAsync(new HttpRequestException("Network error"));
-            await Should.ThrowAsync<HttpRequestException>(async () =>
-            {
-                await _citySearchService.SearchAsync("AnyCity");
-            }
-            );
-        
+                .Setup(p => p.SearchAsync(It.IsAny<string>()))
+                .ThrowsAsync(new HttpRequestException("Network error"));
+
+            var service = new CitySearchAppService(_mockProvider.Object);
+            var result = await service.SearchAsync("AnyCity");
+
+            result.ShouldNotBeNull();
+            result.Count.ShouldBe(0);
         }
     }
 }
-

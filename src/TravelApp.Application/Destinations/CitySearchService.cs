@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Volo.Abp.ObjectMapping;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
 using static System.Net.WebRequestMethods;
@@ -63,6 +64,8 @@ namespace TravelApp.Destinations
         [JsonPropertyName("name")]
         public string Name { get; set; }
     }
+    
+    [RemoteService(IsEnabled = false)]
     public class CitySearchService : ApplicationService, ICitySearchService, ITransientDependency
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -82,9 +85,12 @@ namespace TravelApp.Destinations
                 return new List<DestinationDto>();
             }
                 var client = _httpClientFactory.CreateClient("Geoapify");
-                string url = $"v1/geocode/search?text={Uri.EscapeDataString(cityName)}&format=json&apiKey={apiKey}";
-                _logger.LogInformation($"Llamando a la API: {client.BaseAddress}{url}");
-                var apiResponse = await client.GetFromJsonAsync<GeoapifyGeocodeResponse>(url);
+                string fullUrl = $"https://api.geoapify.com/v1/geocode/search/?text={Uri.EscapeDataString(cityName)}&format=json&apiKey={apiKey}";
+                _logger.LogInformation("Llamando a la API: {FullUrl}", fullUrl);
+                Console.WriteLine($"Llamando a la API: {fullUrl}");
+                var response = await client.GetAsync(fullUrl);
+                response.EnsureSuccessStatusCode();
+                var apiResponse = await response.Content.ReadFromJsonAsync<GeoapifyGeocodeResponse>();
                 var resultDataList = apiResponse?.Results ?? new List<ResultData>();
                 return ObjectMapper.Map<List<ResultData>, List<DestinationDto>>(resultDataList);
         }
