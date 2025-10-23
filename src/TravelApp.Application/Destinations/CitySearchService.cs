@@ -66,7 +66,7 @@ namespace TravelApp.Destinations
     }
     
     [RemoteService(IsEnabled = false)]
-    public class CitySearchService : ApplicationService, ICitySearchService, ITransientDependency
+    public class CitySearchService : ICitySearchService, ITransientDependency
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IObjectMapper _objectMapper;
@@ -92,7 +92,7 @@ namespace TravelApp.Destinations
                 response.EnsureSuccessStatusCode();
                 var apiResponse = await response.Content.ReadFromJsonAsync<GeoapifyGeocodeResponse>();
                 var resultDataList = apiResponse?.Results ?? new List<ResultData>();
-                return ObjectMapper.Map<List<ResultData>, List<DestinationDto>>(resultDataList);
+                return _objectMapper.Map<List<ResultData>, List<DestinationDto>>(resultDataList);
         }
     }
 }
