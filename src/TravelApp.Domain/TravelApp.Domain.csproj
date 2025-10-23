@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TravelApp.Application.Contracts\TravelApp.Application.Contracts.csproj" />
     <ProjectReference Include="..\TravelApp.Domain.Shared\TravelApp.Domain.Shared.csproj" />
   </ItemGroup>
 

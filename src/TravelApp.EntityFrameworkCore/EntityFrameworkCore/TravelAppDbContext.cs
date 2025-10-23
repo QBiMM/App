@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TravelApp.Destinations;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -27,6 +28,7 @@ public class TravelAppDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Destinations.Destination> Destination { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
 
     #region Entities from the modules
@@ -93,6 +95,10 @@ public class TravelAppDbContext :
             b.Property(x => x.Longitude).HasMaxLength(128);
 
         });
+        
+        // Filtro automático: solo ratings del usuario actual
+        builder.Entity<Rating>().HasQueryFilter(r =>
+            r.UserId == CurrentTenant.Id); // O usar CurrentUser.Id via service
         
         //builder.Entity<YourEntity>(b =>
         //{

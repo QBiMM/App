@@ -20,9 +20,8 @@ public class TravelAppApplicationAutoMapperProfile : Profile
             .ForMember(dest => dest.ImageURL, opt => opt.Ignore())
             .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Lat.ToString(CultureInfo.InvariantCulture)))
             .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Lon.ToString(CultureInfo.InvariantCulture)));
-
-
-        
-      
+        CreateMap <Destinations.Rating, Destinations.RatingDto>();
+        CreateMap<Destinations.CreateUpdateRatingDto, Destinations.Rating>();
+    
     }
 }

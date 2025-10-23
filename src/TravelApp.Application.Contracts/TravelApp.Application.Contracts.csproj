@@ -20,5 +20,11 @@
     <PackageReference Include="Volo.Abp.Account.Application.Contracts" Version="9.3.4" />
     <PackageReference Include="Volo.Abp.TenantManagement.Application.Contracts" Version="9.3.4" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Volo.Abp.Identity.Domain">
+      <HintPath>..\..\..\..\..\..\..\home\balta\.nuget\packages\volo.abp.identity.domain\9.3.4\lib\net9.0\Volo.Abp.Identity.Domain.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
 </Project>
