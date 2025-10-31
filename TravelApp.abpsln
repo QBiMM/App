@@ -1,9 +1,10 @@
 {
-  "id": "b237a4b6-ed5f-4137-8fda-bdd1d2f25d56",
+  "id": "009b6bb5-3120-477f-8fbf-3b9808cad0c0",
+  "creationTime": "10/01/2025 22:37:39 +00:00",
   "template": "app",
   "versions": {
-    "AbpFramework": "9.3.2",
-    "AbpStudio": "1.2.2",
+    "AbpFramework": "9.3.4",
+    "AbpStudio": "1.3.2",
     "TargetDotnetFramework": "net9.0"
   },
   "modules": {
@@ -25,31 +26,29 @@
   },
   "creatingStudioConfiguration": {
     "template": "app",
-    "createdAbpStudioVersion": "1.2.2",
+    "createdAbpStudioVersion": "1.3.2",
     "tiered": "false",
     "runInstallLibs": "true",
     "useLocalReferences": "false",
     "multiTenancy": "true",
     "includeTests": "true",
     "kubernetesConfiguration": "false",
-    "uiFramework": "angular",
+    "uiFramework": "mvc",
     "mobileFramework": "none",
     "distributedEventBus": "none",
     "databaseProvider": "ef",
     "runDbMigrator": "true",
-    "databaseManagementSystem": "sqlserver",
+    "databaseManagementSystem": "postgresql",
     "separateTenantSchema": "false",
     "createInitialMigration": "true",
     "theme": "leptonx-lite",
     "themeStyle": "",
     "themeMenuPlacement": "",
     "mobileFramework": "none",
-    "progressiveWebApp": "false",
-    "runProgressiveWebAppSupport": "false",
     "publicWebsite": "false",
     "socialLogin": "true",
     "selectedLanguages": ["Arabic", "Chinese (Simplified)", "Chinese (Traditional)", "Czech", "English", "English (United Kingdom)", "Finnish", "French", "German (Germany)", "Hindi ", "Hungarian", "Icelandic", "Italian", "Portuguese (Brazil)", "Romanian (Romania)", "Russian", "Slovak", "Spanish", "Swedish", "Turkish", ],
     "defaultLanguage": "Arabic",
-    "createCommand": "abp new TravelApp -t app --ui-framework angular --database-provider ef --database-management-system sqlserver --theme leptonx-lite --without-cms-kit --dont-run-bundling -no-file-management"
+    "createCommand": "abp new TravelApp -t app --ui-framework mvc --database-provider ef --database-management-system postgresql --theme leptonx-lite --without-cms-kit --dont-run-bundling -no-file-management"
   }
 }

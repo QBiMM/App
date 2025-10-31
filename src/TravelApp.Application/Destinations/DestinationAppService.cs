@@ -32,6 +32,14 @@ namespace TravelApp.Destinations
             {
                 throw new ArgumentException("Destination name can not be empty.");
             }
+            
+            // Validar duplicado
+            var exists = await _repository.AnyAsync(d => d.Name == input.Name);
+            if (exists)
+            {
+                throw new AbpValidationException("Destination already exists.");
+            }
+            
             var destinationEntity = ObjectMapper.Map<CreateUpdateDestinationDto, Destination>(input);
             var destination = await _repository.InsertAsync(destinationEntity);
             return ObjectMapper.Map<Destination, DestinationDto>(destination);
@@ -41,17 +49,6 @@ namespace TravelApp.Destinations
         {
             var destinations = await _repository.GetListAsync();
             return ObjectMapper.Map<List<Destination>, List<DestinationDto>>(destinations);
-        }
-        public async Task<DestinationDto> CreateAsync(CreateUpdateDestinationDto input)
-        {
-            var existingDestination = await _repository.FirstOrDefaultAsync(d => d.Name == input.Name);
-            if (existingDestination != null)
-            {
-                throw new AbpValidationException($"A destination with the name '{input.Name}' already exists.");
-            }
-            var destination = ObjectMapper.Map<CreateUpdateDestinationDto, Destination>(input);
-            await _repository.InsertAsync(destination);
-            return ObjectMapper.Map<Destination, DestinationDto>(destination);
         }
     }
 
