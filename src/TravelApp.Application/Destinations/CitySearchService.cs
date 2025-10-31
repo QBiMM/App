@@ -1,18 +1,12 @@
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json.Serialization;
 using Volo.Abp.ObjectMapping;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
-using static System.Net.WebRequestMethods;
 
 namespace TravelApp.Destinations
 {

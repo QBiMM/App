@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TravelApp.Destinations;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -15,8 +17,11 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+<<<<<<< HEAD
 using System.Linq.Expressions;
 using System;
+=======
+>>>>>>> 5d3e1be (Agregar soporte JWT Bearer y cliente OpenIddict para calificaciones de destino. Remover directivas innecesarias.)
 using Volo.Abp.Users;
 
 namespace TravelApp.EntityFrameworkCore;
@@ -84,7 +89,7 @@ public class TravelAppDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
         builder.Entity<Destinations.Destination>(b =>
@@ -98,23 +103,24 @@ public class TravelAppDbContext :
             b.Property(x => x.Longitude).HasMaxLength(128);
 
         });
-        
     }
     protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(ModelBuilder modelBuilder)
     {
-        //El problema es esto, el problema es todo, el problema es la vida misma, el problema es que existo, el problema es que no puedo dejar de pensar en el problema, el problema es que el problema me consume, el problema es que el problema es un problema.
-        // Reemplaza la línea:
-
-        // Por la siguiente, usando ICurrentUser de ABP:
-        var currentUser = LazyServiceProvider?.LazyGetService<ICurrentUser>();
-
-        // Asegúrate de tener el using correspondiente:
         var expression = base.CreateFilterExpression<TEntity>(modelBuilder);
+
         if (typeof(IUserOwned).IsAssignableFrom(typeof(TEntity)))
         {
-            Expression<Func<TEntity, bool>> userFilter = e => currentUser.Id != null && EF.Property<Guid>(e, "UserId") == currentUser.Id.Value;
-            expression = expression == null ? userFilter : QueryFilterExpressionHelper.CombineExpressions(expression, userFilter);
+            var currentUser = LazyServiceProvider?.LazyGetService<ICurrentUser>();
+            Expression<Func<TEntity, bool>> userFilter = e =>
+                currentUser != null && currentUser.Id != null &&
+                EF.Property<Guid>(e, "UserId") == currentUser.Id.Value;
+
+            expression = expression == null 
+                ? userFilter 
+                : QueryFilterExpressionHelper.CombineExpressions(expression, userFilter);
         }
+
         return expression;
     }
+
 }
