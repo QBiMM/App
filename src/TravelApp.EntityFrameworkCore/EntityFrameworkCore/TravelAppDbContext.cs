@@ -15,6 +15,9 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System;
+using Volo.Abp.Users;
 
 namespace TravelApp.EntityFrameworkCore;
 
@@ -96,15 +99,22 @@ public class TravelAppDbContext :
 
         });
         
-        // Filtro automático: solo ratings del usuario actual
-        builder.Entity<Rating>().HasQueryFilter(r =>
-            r.UserId == CurrentTenant.Id); // O usar CurrentUser.Id via service
-        
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(TravelAppConsts.DbTablePrefix + "YourEntities", TravelAppConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+    }
+    protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(ModelBuilder modelBuilder)
+    {
+        //El problema es esto, el problema es todo, el problema es la vida misma, el problema es que existo, el problema es que no puedo dejar de pensar en el problema, el problema es que el problema me consume, el problema es que el problema es un problema.
+        // Reemplaza la línea:
+
+        // Por la siguiente, usando ICurrentUser de ABP:
+        var currentUser = LazyServiceProvider?.LazyGetService<ICurrentUser>();
+
+        // Asegúrate de tener el using correspondiente:
+        var expression = base.CreateFilterExpression<TEntity>(modelBuilder);
+        if (typeof(IUserOwned).IsAssignableFrom(typeof(TEntity)))
+        {
+            Expression<Func<TEntity, bool>> userFilter = e => currentUser.Id != null && EF.Property<Guid>(e, "UserId") == currentUser.Id.Value;
+            expression = expression == null ? userFilter : QueryFilterExpressionHelper.CombineExpressions(expression, userFilter);
+        }
+        return expression;
     }
 }
