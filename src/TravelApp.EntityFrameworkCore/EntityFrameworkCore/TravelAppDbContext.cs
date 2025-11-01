@@ -17,11 +17,6 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-<<<<<<< HEAD
-using System.Linq.Expressions;
-using System;
-=======
->>>>>>> 5d3e1be (Agregar soporte JWT Bearer y cliente OpenIddict para calificaciones de destino. Remover directivas innecesarias.)
 using Volo.Abp.Users;
 
 namespace TravelApp.EntityFrameworkCore;
