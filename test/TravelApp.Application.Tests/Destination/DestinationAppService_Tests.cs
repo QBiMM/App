@@ -16,7 +16,7 @@ using Xunit;
 
 namespace TravelApp.Destination
 { 
-    public abstract class IDestinationAppService<TStartupModule> : TravelAppApplicationTestBase<TStartupModule>
+    public abstract class IDestinationAppService<TStartupModule> : TravelAppTestBase<TStartupModule> 
         where TStartupModule : IAbpModule
     {
         private readonly IDestinationAppService _service;

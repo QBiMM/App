@@ -102,13 +102,7 @@ public class TravelAppDbContext :
     }
     protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(ModelBuilder modelBuilder)
     {
-        //El problema es esto, el problema es todo, el problema es la vida misma, el problema es que existo, el problema es que no puedo dejar de pensar en el problema, el problema es que el problema me consume, el problema es que el problema es un problema.
-        // Reemplaza la línea:
-
-        // Por la siguiente, usando ICurrentUser de ABP:
         var currentUser = LazyServiceProvider?.LazyGetService<ICurrentUser>();
-
-        // Asegúrate de tener el using correspondiente:
         var expression = base.CreateFilterExpression<TEntity>(modelBuilder);
         if (typeof(IUserOwned).IsAssignableFrom(typeof(TEntity)))
         {

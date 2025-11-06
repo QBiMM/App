@@ -21,7 +21,6 @@ public class TravelAppApplicationAutoMapperProfile : Profile
             .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Lat.ToString(CultureInfo.InvariantCulture)))
             .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Lon.ToString(CultureInfo.InvariantCulture)));
         CreateMap <Destinations.Rating, Destinations.RatingDto>();
-        CreateMap<Destinations.CreateUpdateRatingDto, Destinations.Rating>();
-    
+        CreateMap<Destinations.RatingDto, Destinations.Rating>();
     }
 }

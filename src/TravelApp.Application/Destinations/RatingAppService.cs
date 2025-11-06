@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp;
+using Volo.Abp.Account;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Authorization;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Security.Claims;
 using Volo.Abp.Users;
 
 namespace TravelApp.Destinations
@@ -22,17 +26,22 @@ namespace TravelApp.Destinations
         IRatingAppService
     {
         private readonly ICurrentUser _currentUser;
+        private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
         private readonly IRepository<Destination, Guid> _destinationRepository;
 
         public RatingAppService(
+            ICurrentPrincipalAccessor currentPrincipalAccessor,
             IRepository<Rating, Guid> repository, 
             IRepository<Destination, Guid> destinationRepository,
             ICurrentUser currentUser) 
             : base(repository)
         {
+            _currentPrincipalAccessor = currentPrincipalAccessor; 
             _currentUser = currentUser;
             _destinationRepository = destinationRepository;
         }
+        private const string WordPattern = @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$";
+
 
         // Método combinado Create/Update
         public async Task<RatingDto> CreateUpdateRatingDto(RatingDto input)
@@ -49,6 +58,11 @@ namespace TravelApp.Destinations
                 var existingRating = await Repository.FirstOrDefaultAsync(
                     r => r.UserId == _currentUser.GetId() && r.DestinationId == input.DestinationId
                 );
+
+                if (!IsValidComment(input.Comment))
+                {
+                   throw new UserFriendlyException("El comentario debe tener exactamente 5 palabras y cada palabra no debe exceder los 25 caracteres. Solo se aceptan letras."); 
+                }
 
                 if (existingRating != null)
                 {
@@ -74,13 +88,18 @@ namespace TravelApp.Destinations
                 ObjectMapper.Map(input, rating);
                 rating = await Repository.UpdateAsync(rating, autoSave: true);
             }
-
             return ObjectMapper.Map<Rating, RatingDto>(rating);
         }
 
         // Eliminar por Id
         public override async Task DeleteAsync(Guid id)
         {
+            var rating = await Repository.GetAsync(id);
+            // Validación de propiedad
+            if (rating.UserId != _currentUser.GetId())
+            {
+                throw new AbpAuthorizationException("No tenés permiso para borrar esta calificación.");
+            }
             await Repository.DeleteAsync(id);
         }
 
@@ -121,6 +140,30 @@ namespace TravelApp.Destinations
                 totalCount,
                 dtoList
             );
+        }
+        private bool IsValidComment(string comentario)
+        {
+            if (string.IsNullOrWhiteSpace(comentario))
+            {
+                return false;
+            }
+            if (!Regex.IsMatch(comentario, WordPattern))
+            {
+                return false;
+            }
+
+            var palabras = comentario.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            if (palabras.Length != 5) {
+                return false;
+            }
+            foreach (var palabra in palabras)
+            {
+                if (palabra.Length > 25)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
