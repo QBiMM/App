@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TravelApp.Web;
 
@@ -21,6 +23,7 @@ public class Program
         {
             Log.Information("Starting web host.");
             var builder = WebApplication.CreateBuilder(args);
+
             builder.Host
                 .AddAppSettingsSecretsJson()
                 .UseAutofac()
@@ -39,42 +42,75 @@ public class Program
                         .WriteTo.Async(c => c.Console())
                         .WriteTo.Async(c => c.AbpStudio(services));
                 });
+
+            // Agregar ABP
             await builder.AddApplicationAsync<TravelAppWebModule>();
+
+            // --- Configuración de autenticación JWT / OpenIddict ---
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Authority = "https://localhost:44349"; // URL del servidor OpenIddict
+                options.Audience = "TravelApp";
+                options.RequireHttpsMetadata = true;
+            });
+
+            builder.Services.AddAuthorization(); // Necesario para [Authorize]
+
+            // --- Configuración de Swagger con Bearer Token ---
             builder.Services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
+                options.SwaggerDoc("v2", new OpenApiInfo
                 {
                     Title = "TravelApp API",
                     Version = "v2"
                 });
 
-                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Description = "Ingrese 'Bearer {token}'"
                 });
 
-                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        new OpenApiSecurityScheme
                         {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            Reference = new OpenApiReference
                             {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             }
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     }
                 });
             });
+
             var app = builder.Build();
+
+            // Middlewares de autenticación / autorización
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             await app.InitializeApplicationAsync();
+
+            // Middleware para Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "TravelApp API v2");
+            });
+
             await app.RunAsync();
             return 0;
         }

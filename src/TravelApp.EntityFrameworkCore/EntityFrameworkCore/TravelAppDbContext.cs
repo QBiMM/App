@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using TravelApp.Destinations;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -15,8 +17,6 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using System.Linq.Expressions;
-using System;
 using Volo.Abp.Users;
 
 namespace TravelApp.EntityFrameworkCore;
@@ -84,7 +84,7 @@ public class TravelAppDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
         builder.Entity<Destinations.Destination>(b =>
@@ -98,7 +98,6 @@ public class TravelAppDbContext :
             b.Property(x => x.Longitude).HasMaxLength(128);
 
         });
-        
     }
     protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(ModelBuilder modelBuilder)
     {
@@ -109,6 +108,8 @@ public class TravelAppDbContext :
             Expression<Func<TEntity, bool>> userFilter = e => currentUser.Id != null && EF.Property<Guid>(e, "UserId") == currentUser.Id.Value;
             expression = expression == null ? userFilter : QueryFilterExpressionHelper.CombineExpressions(expression, userFilter);
         }
+
         return expression;
     }
+
 }

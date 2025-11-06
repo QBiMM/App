@@ -12,8 +12,8 @@ public class TravelAppApplicationAutoMapperProfile : Profile
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organization. */
-        CreateMap <Destinations.Destination, Destinations.DestinationDto> ();
-        CreateMap <Destinations.CreateUpdateDestinationDto, Destinations.Destination> ();
+        CreateMap <Destination, DestinationDto> ();
+        CreateMap <CreateUpdateDestinationDto, Destination> ();
         CreateMap<ResultData, DestinationDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.City))

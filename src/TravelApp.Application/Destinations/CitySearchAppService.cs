@@ -1,12 +1,8 @@
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Repositories;
-using Volo.Abp.ObjectMapping;
 using Volo.Abp.Validation;
 
 namespace TravelApp.Destinations
@@ -29,6 +25,7 @@ namespace TravelApp.Destinations
                 return await _citySearchService.SearchAsync(cityName);
             } catch (HttpRequestException ex)
             {
+                Console.WriteLine(ex.Message);
                 return new List<DestinationDto>();
             }
         }
