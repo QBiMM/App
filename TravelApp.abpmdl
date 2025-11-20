@@ -2,43 +2,43 @@
   "template": "app",
   "imports": {
     "Volo.Abp.LeptonXLiteTheme": {
-      "version": "4.3.4",
+      "version": "4.3.5",
       "isInstalled": true
     },
     "Volo.Abp.Account": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     },
     "Volo.Abp.OpenIddict": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     },
     "Volo.Abp.Identity": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     },
     "Volo.Abp.TenantManagement": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     },
     "Volo.Abp.SettingManagement": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     },
     "Volo.Abp.PermissionManagement": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     },
     "Volo.Abp.FeatureManagement": {
-      "version": "9.3.4",
+      "version": "9.3.5",
       "isInstalled": true,
-      "creationTime": "10/01/2025 22:37:39 +00:00"
+      "creationTime": "11/19/2025 04:24:57 +00:00"
     }
   },
   "folders": {
@@ -72,14 +72,6 @@
       "path": "src/TravelApp.HttpApi.Client/TravelApp.HttpApi.Client.abppkg",
       "folder": "src"
     },
-    "TravelApp.Web": {
-      "path": "src/TravelApp.Web/TravelApp.Web.abppkg",
-      "folder": "src"
-    },
-    "TravelApp.Web.Tests": {
-      "path": "test/TravelApp.Web.Tests/TravelApp.Web.Tests.abppkg",
-      "folder": "test"
-    },
     "TravelApp.EntityFrameworkCore.Tests": {
       "path": "test/TravelApp.EntityFrameworkCore.Tests/TravelApp.EntityFrameworkCore.Tests.abppkg",
       "folder": "test"
@@ -102,6 +94,10 @@
     },
     "TravelApp.DbMigrator": {
       "path": "src/TravelApp.DbMigrator/TravelApp.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "TravelApp.HttpApi.Host": {
+      "path": "src/TravelApp.HttpApi.Host/TravelApp.HttpApi.Host.abppkg",
       "folder": "src"
     },
     "TravelApp.Domain": {

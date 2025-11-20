@@ -1,4 +1,5 @@
 using System;
+using TravelApp.Domain.Shared;
 
 namespace TravelApp.Destinations;
 

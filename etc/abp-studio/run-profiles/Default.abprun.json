@@ -1,18 +1,42 @@
 ﻿{
   "applications": {
-    "TravelApp.Web": {
+    "TravelApp.HttpApi.Host": {
       "type": "dotnet-project",
-      "launchUrl": "https://localhost:44349",
-      "path": "../../../src/TravelApp.Web/TravelApp.Web.csproj",
-      "kubernetesService": ".*-web$",
+      "launchUrl": "https://localhost:44319",
+      "path": "../../../src/TravelApp.HttpApi.Host/TravelApp.HttpApi.Host.csproj",
+      "kubernetesService": ".*-httpapihost$",
       "healthCheckEndpoint": "/health-status",
       "healthUiEndpoint": "/health-ui",
       "execution": {
-        "order": 2
+        "order": 4
       }
+    },
+    "TravelApp.Angular": {
+      "type": "cli",
+      "workingDirectory": "../../../angular",
+      "startCommand": "./start.ps1",
+      "launchUrl": "http://localhost:4200",
+      "kubernetesService": ".*-angular$",
+      "execution": {
+        "order": 2
+      }    
     }
   },
   "containers": {
     "serviceName": "TravelApp-Containers",
+  },
+  "tasks":{
+    "Initialize Solution":{
+    "type": "cli",
+    "runOnSolutionOpen": true,
+    "startCommand": "etc/scripts/initialize-solution.ps1",
+    "workingDirectory": "../../../"
+    },
+    "Migrate Database":{
+    "type": "cli",
+    "runOnSolutionOpen": false,
+    "startCommand": "etc/scripts/migrate-database.ps1",
+    "workingDirectory": "../../../"
+    }
   }
 }

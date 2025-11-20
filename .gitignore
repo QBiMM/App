@@ -261,7 +261,7 @@ src/TravelApp.Web.Public/Logs/*
 src/TravelApp.Web.Public.Host/Logs/*
 src/TravelApp.AuthServer/Logs/*
 src/TravelApp.HttpApi.Host/Logs/*
-src/TravelApp.HttpApi.HostWithIds/Logs/*
+src/TravelApp.HttpApi.Host/Logs/*
 src/TravelApp.DbMigrator/Logs/*
 src/TravelApp.Blazor.Server/Logs/*
 src/TravelApp.Blazor.Server.Tiered/Logs/*

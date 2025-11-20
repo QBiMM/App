@@ -1,0 +1,33 @@
+<div class="card mt-4">
+  <div class="card-body">
+    <h3 class="card-title">🌍 Buscador de Destinos</h3>
+    
+    <div class="input-group mb-3">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Escribe una ciudad (ej: Paris, Tokyo)" 
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="search()" 
+      >
+      <button class="btn btn-primary" type="button" (click)="search()" [disabled]="isLoading">
+        <i class="fa fa-search me-1"></i> {{ isLoading ? 'Buscando...' : 'Buscar' }}
+      </button>
+    </div>
+
+    <div *ngIf="results.length > 0" class="list-group">
+      <div *ngFor="let city of results" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ city.name }}</h5>
+        </div>
+        <p class="mb-1">
+          <small>Lat: {{ city.latitude }} | Lon: {{ city.longitude }}</small>
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="results.length === 0 && !isLoading && searchTerm !== ''" class="alert alert-light">
+      No se encontraron resultados para "{{ searchTerm }}".
+    </div>
+  </div>
+</div>

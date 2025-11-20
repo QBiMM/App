@@ -1,0 +1,11 @@
+<div class="container text-center mt-5">
+  <h1>Bienvenido a TravelApp</h1>
+  
+  @if (hasLoggedIn) {
+    <app-city-search></app-city-search>
+  } @else {
+    <button class="btn btn-primary btn-lg" (click)="login()">
+      Iniciar Sesión para Buscar
+    </button>
+  }
+</div>
