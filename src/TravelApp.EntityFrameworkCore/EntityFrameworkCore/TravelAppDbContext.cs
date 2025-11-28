@@ -1,4 +1,7 @@
+using System;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using TravelApp.Destinations;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -14,6 +17,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Volo.Abp.Users;
 
 namespace TravelApp.EntityFrameworkCore;
 
@@ -27,6 +31,7 @@ public class TravelAppDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Destinations.Destination> Destination { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
 
     #region Entities from the modules
@@ -79,7 +84,7 @@ public class TravelAppDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
         builder.Entity<Destinations.Destination>(b =>
@@ -93,12 +98,18 @@ public class TravelAppDbContext :
             b.Property(x => x.Longitude).HasMaxLength(128);
 
         });
-        
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(TravelAppConsts.DbTablePrefix + "YourEntities", TravelAppConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
     }
+    protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(ModelBuilder modelBuilder)
+    {
+        var currentUser = LazyServiceProvider?.LazyGetService<ICurrentUser>();
+        var expression = base.CreateFilterExpression<TEntity>(modelBuilder);
+        if (typeof(IUserOwned).IsAssignableFrom(typeof(TEntity)))
+        {
+            Expression<Func<TEntity, bool>> userFilter = e => currentUser.Id != null && EF.Property<Guid>(e, "UserId") == currentUser.Id.Value;
+            expression = expression == null ? userFilter : QueryFilterExpressionHelper.CombineExpressions(expression, userFilter);
+        }
+
+        return expression;
+    }
+
 }

@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\common.props" />
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -9,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TravelApp.Application.Contracts\TravelApp.Application.Contracts.csproj" />
     <ProjectReference Include="..\TravelApp.Domain.Shared\TravelApp.Domain.Shared.csproj" />
   </ItemGroup>
 
@@ -22,12 +21,12 @@
     <PackageReference Include="Volo.Abp.FeatureManagement.Domain" Version="9.3.4" />
     <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="9.3.4" />
     <PackageReference Include="Volo.Abp.BlobStoring.Database.Domain" Version="9.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Volo.Abp.OpenIddict.Domain" Version="9.3.4" />
     <PackageReference Include="Volo.Abp.Identity.Domain" Version="9.3.4" />
     <PackageReference Include="Volo.Abp.TenantManagement.Domain" Version="9.3.4" />
+    
+    <!-- AÑADIDOS -->
+    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="9.3.4" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
   </ItemGroup>
-
 </Project>
