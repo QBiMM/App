@@ -18,6 +18,7 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Volo.Abp.Users;
+using TravelApp.Favorites;
 
 namespace TravelApp.EntityFrameworkCore;
 
@@ -32,6 +33,8 @@ public class TravelAppDbContext :
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Destinations.Destination> Destination { get; set; }
     public DbSet<Rating> Ratings { get; set; }
+
+    public DbSet<TrackedDestination> TrackedDestinations { get; set; }
 
 
     #region Entities from the modules
@@ -96,7 +99,11 @@ public class TravelAppDbContext :
             b.Property(x => x.ImageURL).HasMaxLength(1024);
             b.Property(x => x.Latitude).HasMaxLength(128);
             b.Property(x => x.Longitude).HasMaxLength(128);
-
+        });
+        builder.Entity<TrackedDestination>(b => {
+            b.ToTable(TravelAppConsts.DbTablePrefix + "TrackedDestinations", TravelAppConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.HasOne(d => d.Destination).WithMany().HasForeignKey(d => d.DestinationId).IsRequired();
         });
     }
     protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(ModelBuilder modelBuilder)
